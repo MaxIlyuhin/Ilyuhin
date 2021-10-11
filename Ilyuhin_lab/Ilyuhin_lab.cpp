@@ -107,7 +107,7 @@ CS create_cs() {
     cin.ignore(10000, '\n');
     getline(cin, cs.name);
     cout << "Please, enter the number of shops" << " ";
-    cs.count_of_workshops = GetCorrectNumber(1, 10);
+    cs.count_of_workshops = GetCorrectNumber(0, 10);
     cs = Edit_shop_cs(cs);
     cout << "Please, enter the efficiency" << " ";
     cs.efficiency = GetCorrectNumber(0.0, 1.0);
@@ -131,63 +131,45 @@ void print_CS(const CS& cs)
     cout << "Efficiency" << " " << cs.efficiency << endl;
 }
     
-Pipe load_pipe() {
+Pipe load_pipe(ifstream& fin) {
      Pipe p;
-     ifstream fin;
-     fin.open("pipe.txt", ios::in);
-     if (fin.is_open())
      {
          fin >> p.id;
          fin >> p.length;
          fin >> p.diameter;
          fin >> p.repair;
-         fin.close();
      }
      return p;
  }
 
-CS load_CS() {
+CS load_CS(ifstream& fin) {
      CS cs;
-     ifstream fin;
-     fin.open("CS.txt", ios::in);
-     if (fin.is_open())
      {
          fin >> cs.id;
          fin >> cs.name;
          fin >> cs.count_of_workshops;
          fin >> cs.working_workshops;
          fin >> cs.efficiency;
-         fin.close();
      }
      return cs;
  }
 
- void save_pipe(const Pipe& p)
+ void save_pipe(ofstream& fout, const Pipe& p)
  {
-     ofstream fout;
-     fout.open("pipe.txt", ios::out);
-     if (fout.is_open())
-     {
+     
          fout << p.id << endl
              << p.length << endl
              << p.diameter << endl
              << p.repair << endl;
-         fout.close();
-     }
  }
 
- void save_CS(const CS& cs)
+ void save_CS(ofstream& fout, const CS& cs)
  {
-     ofstream fout;
-     fout.open("CS.txt", ios::out);
-     if (fout.is_open())
-     {
          fout << cs.id << endl
              << cs.name << endl
              << cs.count_of_workshops << endl
              << cs.working_workshops << endl
              << cs.efficiency << endl;
-     }
  }
 
 int main()
@@ -255,8 +237,28 @@ int main()
         {
             if (pipe_created && cs_created)
             {
-                save_pipe(p);
-                save_CS(cs);
+                ofstream fout;
+                fout.open("pipe.txt", ios::out);
+                if (fout.is_open())
+                {
+                    save_pipe(fout, p);
+                }
+                else
+                {
+                    cout << "error writing from file 'pipe.txt'";
+                }
+                fout.close();
+
+                fout.open("CS.txt", ios::out);
+                if (fout.is_open())
+                {
+                    save_CS(fout, cs);
+                }
+                else
+                {
+                    cout << "error writing from file 'cs.txt'";
+                }
+                fout.close();
             }
             else
             {
@@ -266,11 +268,28 @@ int main()
         }
         case 7:
         {
-           print_pipe(load_pipe());
-
-            print_CS(load_CS());
-            // p = LoadPipe();
-            // cs = LoadPipe();
+           ifstream fin;
+           fin.open("pipe.txt", ios::in);
+           if (fin.is_open())
+           {
+               print_pipe(load_pipe(fin));
+           }
+           else
+           {
+               cout << "error reading from file 'pipe.txt'" << endl;
+           }
+           fin.close();
+           
+           fin.open("cs.txt", ios::in);
+           if (fin.is_open())
+           {
+               print_CS(load_CS(fin));
+           }
+           else
+           {
+               cout << "error reading from file 'cs.txt'" << endl;
+           }
+           fin.close();
             break;
         }
         case 0:
