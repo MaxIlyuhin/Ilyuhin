@@ -46,7 +46,7 @@ T GetCorrectNumber(T min, T max)
         return x;
 }
 
-Pipe Edit_repair_pipe(Pipe& p)
+void Edit_repair_pipe(Pipe& p)//!!!!!!!!!!!!!!!!!!!!!!!!
 {
     while (true)
     {
@@ -77,7 +77,6 @@ Pipe Edit_repair_pipe(Pipe& p)
         cin.clear();
         cin.ignore(10000, '\n');
     }
-    return p;
 }
 
 Pipe create_pipe()
@@ -88,15 +87,14 @@ Pipe create_pipe()
     p.length = GetCorrectNumber(1.0, 500000.0);
     cout << "Please, enter the pipe diameter (mm)" << " ";
     p.diameter = GetCorrectNumber(300, 1420);
-    p = Edit_repair_pipe(p);
+    Edit_repair_pipe(p);
     return p;
 }
 
-CS Edit_shop_cs(CS& cs)
+void Edit_shop_cs(CS& cs)//!!!!!!!!!!!!!!!!!!!
 {
     cout << "Please, enter the number of shops in work" << " ";
     cs.working_workshops = GetCorrectNumber(1, cs.count_of_workshops);
-    return cs;
 }
 
 CS create_cs() {
@@ -108,7 +106,7 @@ CS create_cs() {
     getline(cin, cs.name);
     cout << "Please, enter the number of shops" << " ";
     cs.count_of_workshops = GetCorrectNumber(0, 10);
-    cs = Edit_shop_cs(cs);
+    Edit_shop_cs(cs);
     cout << "Please, enter the efficiency" << " ";
     cs.efficiency = GetCorrectNumber(0.0, 1.0);
     return cs;
@@ -133,31 +131,28 @@ void print_CS(const CS& cs)
     
 Pipe load_pipe(ifstream& fin) {
      Pipe p;
-     {
          fin >> p.id;
          fin >> p.length;
          fin >> p.diameter;
          fin >> p.repair;
-     }
      return p;
  }
 
-CS load_CS(ifstream& fin) {
+CS load_CS(ifstream& fin) {//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      CS cs;
-     {
-         fin >> cs.id;
-         fin >> cs.name;
-         fin >> cs.count_of_workshops;
-         fin >> cs.working_workshops;
-         fin >> cs.efficiency;
-     }
+         fin >> cs.id
+             >> cs.name
+             >> cs.count_of_workshops
+             >> cs.working_workshops
+             >> cs.efficiency;
      return cs;
  }
 
  void save_pipe(ofstream& fout, const Pipe& p)
  {
      
-         fout << p.id << endl
+         fout << "Pipe" << endl
+             << p.id << endl
              << p.length << endl
              << p.diameter << endl
              << p.repair << endl;
@@ -165,142 +160,182 @@ CS load_CS(ifstream& fin) {
 
  void save_CS(ofstream& fout, const CS& cs)
  {
-         fout << cs.id << endl
+         fout << "cs"  << endl
+             << cs.id << endl
              << cs.name << endl
              << cs.count_of_workshops << endl
              << cs.working_workshops << endl
              << cs.efficiency << endl;
  }
 
-int main()
-{
-    Pipe p;
-    CS cs;
-    bool pipe_created = false;
-    bool cs_created = false;
-    while (1)
-    {
-        PrintMenu();
-        switch (GetCorrectNumber(0, 7))
+ int main()
+ {
+     Pipe p = {};
+     CS cs = {};
+     bool pipe_created = false;
+     bool cs_created = false;
+     while (1)
+     {
+         PrintMenu();
+         switch (GetCorrectNumber(0, 7))
+         {
+         case 1:
+         {
+             p = create_pipe();
+             pipe_created = true;
+             break;
+         }
+         case 2:
+         {
+             cs = create_cs();
+             cs_created = true;
+             break;
+         }
+         case 3:
+         {
+             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++++++
+             if (pipe_created)
+                 print_pipe(p);
+             if (cs_created)
+                 print_CS(cs);
+             if (!pipe_created && !cs_created)
+                 cout << "elements are not created" << endl;
+             break;
+         }
+         case 4:
+         {
+             if (pipe_created)
+             {
+                 Edit_repair_pipe(p);
+             }
+             else
+             {
+                 cout << "Pipe in not created!" << endl;
+             }
+             break;
+         }
+         case 5:
+         {
+             if (cs_created)
+             {
+                 Edit_shop_cs(cs);
+             }
+             else
+             {
+                 cout << "CS in not created!" << endl;
+             }
+             break;
+         }
+         case 6:
         {
-        case 1:
-        {
-            p = create_pipe();
-            pipe_created = true;
-            break;
-        }
-        case 2:
-        {
-            cs = create_cs();
-            cs_created = true;
-            break;
-        }
-        case 3:
-        {
-            if(pipe_created && cs_created)
-            {
+             ofstream fout;
+             if (pipe_created && cs_created)//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+             {
+                 fout.open("all.txt", ios::out);//!!!!!!!!!!!!!!!!!!!!!!!!
+                 if (fout.is_open())
+                 {
+                     save_pipe(fout, p);
+                     save_CS(fout, cs);
+                     pipe_created = true;
+                     cs_created = true;
+                 }
+                 else
+                 {
+                     cout << "error writing to file 'all.txt'";
+                 }
+                 fout.close();
+             }
+             else if (pipe_created && !cs_created)
+             {
 
-                print_pipe(p);
-                print_CS(cs);
-            }
-            else
-            {
-               cout << "Not all elements are created!" << endl;
-            }
-            break;
-        }
-        case 4:
-        {
-            if (pipe_created)
-            {
-                Edit_repair_pipe(p);
-            }
-            else
-            {
-                cout << "Pipe in not created!" << endl;
-            }
-            break;
-        }
-        case 5:
-        {
-            if (cs_created)
-            {
-                Edit_shop_cs(cs);
-            }
-            else
-            {
-                cout << "CS in not created!" << endl;
-            }
-            break;
-        }
-        case 6:
-        {
-            if (pipe_created && cs_created)
-            {
-                ofstream fout;
-                fout.open("pipe.txt", ios::out);
-                if (fout.is_open())
-                {
-                    save_pipe(fout, p);
-                }
-                else
-                {
-                    cout << "error writing from file 'pipe.txt'";
-                }
-                fout.close();
+                 fout.open("all.txt", ios::out);
+                 if (fout.is_open())
+                 {
+                     save_pipe(fout, p);
+                     pipe_created = true;
+                 }
+                 else
+                 {
+                     cout << "error writing to file 'all.txt'";
+                 }
+                 fout.close();
+             }
+             else if (!pipe_created && cs_created)
+             {
+                 fout.open("all.txt", ios::out);
+                 if (fout.is_open())
+                 {
+                     save_CS(fout, cs);
+                     cs_created = true;
+                 }
+                 else
+                 {
+                     cout << "error writing to file 'all.txt'";
+                     cs_created = false;
+                     pipe_created = false;
+                 }
+                 fout.close();
+             }
+             else
+             {
+                 cout << "elements are not created" << endl;
+             }
+             break;
+         }
+         case 7:
+         {
+             ifstream fin;
+             fin.open("all.txt", ios::in);//!!!!!!!!!!!!!!!!!!!!
+             if (fin.is_open())
+             {
+                 string str = {};
+                 while (!fin.eof())
+                 {
 
-                fout.open("CS.txt", ios::out);
-                if (fout.is_open())
-                {
-                    save_CS(fout, cs);
-                }
-                else
-                {
-                    cout << "error writing from file 'cs.txt'";
-                }
-                fout.close();
-            }
-            else
-            {
-                cout << "not all elements are created" << endl;
-            }
-            break;
-        }
-        case 7:
-        {
-           ifstream fin;
-           fin.open("pipe.txt", ios::in);
-           if (fin.is_open())
-           {
-               print_pipe(load_pipe(fin));
-           }
-           else
-           {
-               cout << "error reading from file 'pipe.txt'" << endl;
-           }
-           fin.close();
-           
-           fin.open("cs.txt", ios::in);
-           if (fin.is_open())
-           {
-               print_CS(load_CS(fin));
-           }
-           else
-           {
-               cout << "error reading from file 'cs.txt'" << endl;
-           }
-           fin.close();
-            break;
-        }
-        case 0:
-        {
-            return 0;
-        }
-        default:
-        {
-            cout << "wrong action" << endl;
-        }
-        }
-    }         
-    return 0;
-}
+                     getline(fin, str);
+                     if (str == "Pipe")
+                     {
+                         print_pipe(load_pipe(fin));
+                         cin.clear();
+                         cin.ignore(10000, '\n');
+                     }
+                     else if (str == "cs")
+                     {
+                         print_CS(load_CS(fin));
+                         cin.clear();
+                         cin.ignore(10000, '\n');
+                     }
+                 }
+             }
+             else
+             {
+                 cout << "error reading from file '" << endl;
+             }
+             fin.close();
+                 ////if (pipe_created)
+                 //
+                 //    print_pipe(load_pipe(fin));
+                 //
+                 ////if (cs_created)
+                 //
+                 //    print_CS(load_CS(fin));
+                 //
+                 ////else
+                
+                 //    //cout << "error reading from file 'all.txt'" << endl;
+                 //
+                 //fin.close();
+                 break;
+             }
+         case 0:
+         {
+             return 0;
+         }
+         default:
+         {
+             cout << "wrong action" << endl;
+         }
+         }
+     }
+     return 0;
+ }
