@@ -30,6 +30,9 @@ void PrintMenu()
         << "5. Edit CS " << endl
         << "6. Save to file " << endl
         << "7. Load from file " << endl
+        << "8. Delete Pipe " << endl
+        << "9. Delete CS " << endl
+        << "10. Search " << endl
         << "0. Exit " << endl
         << "Choose action:" << " ";
 }
@@ -71,16 +74,15 @@ void EditPipe(Pipe& p)
         p.repair = 0;
 }
 
-Pipe CreatePipe()
+istream& operator >> (istream& in, Pipe& p)
 {
-    Pipe p;
     p.id = 1;
     cout << "Please, enter the length of the pipe (m)" << " ";
     p.length = GetCorrectNumber(1.0, 500000.0);
     cout << "Please, enter the pipe diameter (mm)" << " ";
     p.diameter = GetCorrectNumber(300, 1420);
     EditPipe(p);
-    return p;
+    return in;
 }
 
 void EditCS(CS& cs)
@@ -89,8 +91,8 @@ void EditCS(CS& cs)
     cs.working_workshops = GetCorrectNumber(1, cs.count_of_workshops);
 }
 
-CS CreateCS() {
-    CS cs;
+istream& operator >> (istream& in, CS& cs)
+{
     cs.id = 2;
     cout << "Please, enter the name of the station" << " ";
     ClearStream();
@@ -100,24 +102,26 @@ CS CreateCS() {
     EditCS(cs);
     cout << "Please, enter the efficiency" << " ";
     cs.efficiency = GetCorrectNumber(0.0, 1.0);
-    return cs;
+    return in;
 }
 
-void PrintPipe(const Pipe& p)
+ostream& operator << (ostream& out, const Pipe& p)
 {
-    cout << "Pipe ID" << " " << p.id << endl;
-    cout << "Pipe length is" << " " << p.length << endl;
-    cout << "Pipe diameter is" << " " << p.diameter << endl;
-    cout << "status:" << " " << ((p.repair == 0) ? "in work" : "in repair") << endl;
+    out << "Pipe ID" << " " << p.id << endl
+        << "Pipe length is" << " " << p.length << endl
+        << "Pipe diameter is" << " " << p.diameter << endl
+        << "status:" << " " << ((p.repair == 0) ? "in work" : "in repair") << endl;
+    return out;
 }
 
-void PrintCS(const CS& cs)
+ostream& operator << (ostream& out, const CS& cs)
 {
-    cout << "CS ID" << " " << cs.id << endl;
-    cout << "Name of CS" << " " << cs.name << endl;
-    cout << "Number of workshops" << " " << cs.count_of_workshops << endl;
-    cout << "Number of working workshops" << " " << cs.working_workshops << endl;
-    cout << "Efficiency" << " " << cs.efficiency << endl;
+    out << "CS ID" << " " << cs.id << endl
+        << "Name of CS" << " " << cs.name << endl
+        << "Number of workshops" << " " << cs.count_of_workshops << endl
+        << "Number of working workshops" << " " << cs.working_workshops << endl
+        << "Efficiency" << " " << cs.efficiency << endl;
+    return out;
 }
 
 Pipe LoadPipe(ifstream& fin) {
@@ -173,6 +177,12 @@ CS& SelectCS(vector <CS>& cs)
     return cs[index - 1];
 }
 
+//void DeletePipe(vector<Pipe>& p)
+//{
+//    cout << "Enter index : ";
+//    unsigned int index = GetCorrectNumber(1u, p.size());
+//}
+
 int main()
 {
     vector <Pipe> pipes;
@@ -187,7 +197,7 @@ int main()
         case 1:
         {
             Pipe p = {};
-            p = CreatePipe();
+            cin >> p;
             pipe_created = true;
             pipes.push_back(p);
             break;
@@ -195,7 +205,7 @@ int main()
         case 2:
         {
             CS cs = {};
-            cs = CreateCS();
+            cin >> cs;
             cs_created = true;
             cses.push_back(cs);
             break;
@@ -205,12 +215,12 @@ int main()
             if (pipe_created)
             {
              for(Pipe p : pipes)
-                PrintPipe(p);
+                cout << p;
             }
             if (cs_created)
             {
              for (CS cs : cses)
-                PrintCS(cs);
+                cout << cs;
             }
             if (!pipe_created && !cs_created)
                 cout << "elements are not created" << endl;
