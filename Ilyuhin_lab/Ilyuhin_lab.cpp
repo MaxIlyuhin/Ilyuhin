@@ -34,20 +34,25 @@ void PrintMenu()
         << "Choose action:" << " ";
 }
 
+void ClearStream()
+{
+    cin.clear();
+    cin.ignore(10000, '\n');
+}
+
 template <typename T>
 T GetCorrectNumber(T min, T max)
 {
     T x;
     while ((cin >> x).fail() || x < min || x > max || cin.peek() != '\n')
     {
-        cin.clear();
-        cin.ignore(10000, '\n');
+        ClearStream();
         cout << "Type number (" << min << "-" << max << "):" << " ";
     }
     return x;
 }
 
-void Edit_repair_pipe(Pipe& p)//!!!!!!!!!!!!!!!!!!!!!!!!
+void EditRepairPipe(Pipe& p)
 {
     while (true)
     {
@@ -75,13 +80,11 @@ void Edit_repair_pipe(Pipe& p)//!!!!!!!!!!!!!!!!!!!!!!!!
         {
             cout << "Too many characters. Please, try again!" << endl;
         }
-        cin.clear();
-        cin.ignore(10000, '\n');
-
+        ClearStream();
     }
 }
 
-Pipe create_pipe()
+Pipe CreatePipe()
 {
     Pipe p;
     p.id = 1;
@@ -89,32 +92,31 @@ Pipe create_pipe()
     p.length = GetCorrectNumber(1.0, 500000.0);
     cout << "Please, enter the pipe diameter (mm)" << " ";
     p.diameter = GetCorrectNumber(300, 1420);
-    Edit_repair_pipe(p);
+    EditRepairPipe(p);
     return p;
 }
 
-void Edit_shop_cs(CS& cs)
+void EditShopCS(CS& cs)
 {
     cout << "Please, enter the number of shops in work" << " ";
     cs.working_workshops = GetCorrectNumber(1, cs.count_of_workshops);
 }
 
-CS create_cs() {
+CS CreateCS() {
     CS cs;
     cs.id = 2;
     cout << "Please, enter the name of the station" << " ";
-    cin.clear();
-    cin.ignore(10000, '\n');
+    ClearStream();
     getline(cin, cs.name);
     cout << "Please, enter the number of shops" << " ";
     cs.count_of_workshops = GetCorrectNumber(0, 10);
-    Edit_shop_cs(cs);
+    EditShopCS(cs);
     cout << "Please, enter the efficiency" << " ";
     cs.efficiency = GetCorrectNumber(0.0, 1.0);
     return cs;
 }
 
-void print_pipe(const Pipe& p)
+void PrintPipe(const Pipe& p)
 {
     cout << "Pipe ID" << " " << p.id << endl;
     cout << "Pipe length is" << " " << p.length << endl;
@@ -122,7 +124,7 @@ void print_pipe(const Pipe& p)
     cout << "status:" << " " << ((p.repair == 0) ? "in work" : "in repair") << endl;
 }
 
-void print_CS(const CS& cs)
+void PrintCS(const CS& cs)
 {
     cout << "CS ID" << " " << cs.id << endl;
     cout << "Name of CS" << " " << cs.name << endl;
@@ -131,7 +133,7 @@ void print_CS(const CS& cs)
     cout << "Efficiency" << " " << cs.efficiency << endl;
 }
 
-Pipe load_pipe(ifstream& fin) {
+Pipe LoadPipe(ifstream& fin) {
     Pipe p;
     fin >> p.id
         >> p.length
@@ -140,7 +142,7 @@ Pipe load_pipe(ifstream& fin) {
     return p;
 }
 
-CS load_CS(ifstream& fin) {
+CS LoadCS(ifstream& fin) {
     CS cs;
     fin >> cs.id
         >> cs.name
@@ -150,7 +152,7 @@ CS load_CS(ifstream& fin) {
     return cs;
 }
 
-void save_pipe(ofstream& fout, const Pipe& p)
+void SavePipe(ofstream& fout, const Pipe& p)
 {
 
     fout << "Pipe" << endl
@@ -160,7 +162,7 @@ void save_pipe(ofstream& fout, const Pipe& p)
         << p.repair << endl;
 }
 
-void save_CS(ofstream& fout, const CS& cs)
+void SaveCS(ofstream& fout, const CS& cs)
 {
     fout << "cs" << endl
         << cs.id << endl
@@ -176,11 +178,18 @@ Pipe& SelectPipe(vector<Pipe> g)
     unsigned int index = GetCorrectNumber(1u, g.size()); 
     return g[index - 1];
 }
+
+CS& SelectCS(vector <CS> gg)
+{
+    cout << "Enter index: ";
+    unsigned int index = GetCorrectNumber(1u, gg.size());
+    return gg[index - 1];
+}
+
 int main()
 {
     vector <Pipe> pipes;
-   
-    CS cs = {};
+    vector <CS> cses;
     bool pipe_created = false;
     bool cs_created = false;
     while (1)
@@ -191,28 +200,31 @@ int main()
         case 1:
         {
             Pipe p = {};
-            p = create_pipe();
+            p = CreatePipe();
             pipe_created = true;
             pipes.push_back(p);
             break;
         }
         case 2:
         {
-            cs = create_cs();
+            CS cs = {};
+            cs = CreateCS();
             cs_created = true;
+            cses.push_back(cs);
             break;
         }
         case 3:
         {
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++++++
             if (pipe_created)
             {
              for(Pipe p : pipes)
-                print_pipe(p);
+                PrintPipe(p);
             }
-
             if (cs_created)
-                print_CS(cs);
+            {
+             for (CS cs : cses)
+                PrintCS(cs);
+            }
             if (!pipe_created && !cs_created)
                 cout << "elements are not created" << endl;
             break;
@@ -221,7 +233,7 @@ int main()
         {
             if (pipe_created)
             {
-                //Edit_repair_pipe(SelectPipe(pipes));
+                EditRepairPipe(SelectPipe(pipes));
             }
             else
             {
@@ -233,7 +245,7 @@ int main()
         {
             if (cs_created)
             {
-                Edit_shop_cs(cs);
+                EditShopCS(SelectCS(cses));
             }
             else
             {
@@ -241,96 +253,96 @@ int main()
             }
             break;
         }
-        //case 6:
-        //{
-        //    ofstream fout;
-        //    if (pipe_created && cs_created)//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //    {
-        //        fout.open("all.txt", ios::out);//!!!!!!!!!!!!!!!!!!!!!!!!
-        //        if (fout.is_open())
-        //        {
-        //            save_pipe(fout, p);
-        //            save_CS(fout, cs);
-        //            pipe_created = true;
-        //            cs_created = true;
-        //        }
-        //        else
-        //        {
-        //            cout << "error writing to file 'all.txt'";
-        //        }
-        //        fout.close();
-        //    }
-        //    else if (pipe_created && !cs_created)
-        //    {
+        case 6:
+        {
+            ofstream fout;
+            if (pipe_created && cs_created)
+            {
+                fout.open("all.txt", ios::out);
+                if (fout.is_open())
+                {
+                    for (Pipe p : pipes)
+                    SavePipe(fout, p);
+                    for (CS cs : cses)
+                    SaveCS(fout, cs);
+                    pipe_created = true;
+                    cs_created = true;
+                }
+                else
+                {
+                    cout << "error writing to file 'all.txt'";
+                }
+                fout.close();
+            }
+            else if (pipe_created && !cs_created)
+            {
 
-        //        fout.open("all.txt", ios::out);
-        //        if (fout.is_open())
-        //        {
-        //            save_pipe(fout, p);
-        //            pipe_created = true;
-        //        }
-        //        else
-        //        {
-        //            cout << "error writing to file 'all.txt'";
-        //        }
-        //        fout.close();
-        //    }
-        //    else if (!pipe_created && cs_created)
-        //    {
-        //        fout.open("all.txt", ios::out);
-        //        if (fout.is_open())
-        //        {
-        //            save_CS(fout, cs);
-        //            cs_created = true;
-        //        }
-        //        else
-        //        {
-        //            cout << "error writing to file 'all.txt'";
-        //            cs_created = false;
-        //            pipe_created = false;
-        //        }
-        //        fout.close();
-        //    }
-        //    else
-        //    {
-        //        cout << "elements are not created" << endl;
-        //    }
-        //    break;
-        //}
-        //case 7:
-        //{
-        //    ifstream fin;
-        //    fin.open("all.txt", ios::in);//!!!!!!!!!!!!!!!!!!!!
-        //    if (fin.is_open())
-        //    {
-        //        string str = {};
-        //        while (!fin.eof())
-        //        {
+                fout.open("all.txt", ios::out);
+                if (fout.is_open())
+                {
+                    for (Pipe p : pipes)
+                    SavePipe(fout, p);
+                    pipe_created = true;
+                }
+                else
+                {
+                    cout << "error writing to file 'all.txt'";
+                }
+                fout.close();
+            }
+            else if (!pipe_created && cs_created)
+            {
+                fout.open("all.txt", ios::out);
+                if (fout.is_open())
+                {
+                    for (CS cs : cses)
+                    SaveCS(fout, cs);
+                    cs_created = true;
+                }
+                else
+                {
+                    cout << "error writing to file 'all.txt'";
+                    cs_created = false;
+                    pipe_created = false;
+                }
+                fout.close();
+            }
+            else
+            {
+                cout << "elements are not created" << endl;
+            }
+            break;
+        }
+        case 7:
+        {
+            ifstream fin;
+            fin.open("all.txt", ios::in);
+            if (fin.is_open())
+            {
+                string str = {};
+                while (!fin.eof())
+                {
 
-        //            getline(fin, str);
-        //            if (str == "Pipe")
-        //            {
-        //                p = load_pipe(fin);
-        //                pipe_created = true;
-        //               // cin.clear();
-        //               // cin.ignore(10000, '\n');
-        //            }
-        //            else if (str == "cs")
-        //            {
-        //                cs = load_CS(fin);
-        //                cs_created = true;
-        //               // cin.clear();
-        //                //cin.ignore(10000, '\n');
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        cout << "error reading from file 'all.txt'" << endl;
-        //    }
-        //    fin.close();
-        //    break;
-        //}
+                    getline(fin, str);
+                    if (str == "Pipe")
+                    {
+                        pipes.push_back(LoadPipe(fin));
+                        pipe_created = true;
+                    }
+                    else if (str == "cs")
+                    {
+                        cses.push_back(LoadCS(fin));
+                        cs_created = true;
+                    }
+                }
+            }
+            else
+            {
+                cout << "error reading from file 'all.txt'" << endl;
+            }
+            fin.close();
+            break;
+        }
         case 0:
         {
             return 0;
