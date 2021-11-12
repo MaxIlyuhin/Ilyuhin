@@ -29,7 +29,7 @@ void PrintMenu()
         << "4. Edit pipe " << endl
         << "5. Edit CS " << endl
         << "6. Save to file " << endl
-        << "7. Load to file " << endl
+        << "7. Load from file " << endl
         << "0. Exit " << endl
         << "Choose action:" << " ";
 }
@@ -62,36 +62,13 @@ string InputFileName()
     return fname;
 }
 
-void EditRepairPipe(Pipe& p)
+void EditPipe(Pipe& p)
 {
-    while (true)
-    {
-        cout << "in repair? [y, n]:" << " ";
-        char repair;
-        cin >> repair;
-        if (cin.peek() == '\n')
-        {
-            if (tolower(repair) == 'y')
-            {
-                p.repair = 1;
-                break;
-            }
-            else if (tolower(repair) == 'n')
-            {
-                p.repair = 0;
-                break;
-            }
-            else
-            {
-                cout << "Not correct input. Please, try again!" << endl;
-            }
-        }
-        else
-        {
-            cout << "Too many characters. Please, try again!" << endl;
-        }
-        ClearStream();
-    }
+    cout << "in repair? (1 - yes; 0 - in work) : ";
+    if (GetCorrectNumber(0, 1) == 1)
+        p.repair = 1;
+    else
+        p.repair = 0;
 }
 
 Pipe CreatePipe()
@@ -102,11 +79,11 @@ Pipe CreatePipe()
     p.length = GetCorrectNumber(1.0, 500000.0);
     cout << "Please, enter the pipe diameter (mm)" << " ";
     p.diameter = GetCorrectNumber(300, 1420);
-    EditRepairPipe(p);
+    EditPipe(p);
     return p;
 }
 
-void EditShopCS(CS& cs)
+void EditCS(CS& cs)
 {
     cout << "Please, enter the number of shops in work" << " ";
     cs.working_workshops = GetCorrectNumber(1, cs.count_of_workshops);
@@ -120,7 +97,7 @@ CS CreateCS() {
     getline(cin, cs.name);
     cout << "Please, enter the number of shops" << " ";
     cs.count_of_workshops = GetCorrectNumber(0, 10);
-    EditShopCS(cs);
+    EditCS(cs);
     cout << "Please, enter the efficiency" << " ";
     cs.efficiency = GetCorrectNumber(0.0, 1.0);
     return cs;
@@ -182,18 +159,18 @@ void SaveCS(ofstream& fout, const CS& cs)
         << cs.efficiency << endl;
 }
 
-Pipe& SelectPipe(vector<Pipe> g)
+Pipe& SelectPipe(vector<Pipe>& p)
 {
     cout << "Enter index: ";
-    unsigned int index = GetCorrectNumber(1u, g.size()); 
-    return g[index - 1];
+    unsigned int index = GetCorrectNumber(1u, p.size()); 
+    return p[index - 1];
 }
 
-CS& SelectCS(vector <CS> gg)
+CS& SelectCS(vector <CS>& cs)
 {
     cout << "Enter index: ";
-    unsigned int index = GetCorrectNumber(1u, gg.size());
-    return gg[index - 1];
+    unsigned int index = GetCorrectNumber(1u, cs.size());
+    return cs[index - 1];
 }
 
 int main()
@@ -243,7 +220,7 @@ int main()
         {
             if (pipe_created)
             {
-                EditRepairPipe(SelectPipe(pipes));
+                EditPipe(SelectPipe(pipes));
             }
             else
             {
@@ -255,7 +232,7 @@ int main()
         {
             if (cs_created)
             {
-                EditShopCS(SelectCS(cses));
+                EditCS(SelectCS(cses));
             }
             else
             {
