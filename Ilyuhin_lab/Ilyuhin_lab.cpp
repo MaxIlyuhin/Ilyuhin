@@ -52,6 +52,16 @@ T GetCorrectNumber(T min, T max)
     return x;
 }
 
+string InputFileName()
+{
+    string fname;
+    cout << "Input the file name: ";
+    ClearStream();
+    getline(cin, fname);
+    fname = fname + ".txt";
+    return fname;
+}
+
 void EditRepairPipe(Pipe& p)
 {
     while (true)
@@ -258,7 +268,8 @@ int main()
             ofstream fout;
             if (pipe_created && cs_created)
             {
-                fout.open("all.txt", ios::out);
+                string FileName = InputFileName();
+                fout.open(FileName, ios::out);
                 if (fout.is_open())
                 {
                     for (Pipe p : pipes)
@@ -270,14 +281,15 @@ int main()
                 }
                 else
                 {
-                    cout << "error writing to file 'all.txt'";
+                    cout << "error writing to file '" << FileName << "'" << endl;
                 }
                 fout.close();
             }
             else if (pipe_created && !cs_created)
             {
 
-                fout.open("all.txt", ios::out);
+                string FileName = InputFileName();
+                fout.open(FileName, ios::out);
                 if (fout.is_open())
                 {
                     for (Pipe p : pipes)
@@ -286,13 +298,15 @@ int main()
                 }
                 else
                 {
-                    cout << "error writing to file 'all.txt'";
+                    cout << "error writing to file '" << FileName << "'" << endl;
                 }
                 fout.close();
             }
             else if (!pipe_created && cs_created)
             {
-                fout.open("all.txt", ios::out);
+
+                string FileName = InputFileName();
+                fout.open(FileName, ios::out);
                 if (fout.is_open())
                 {
                     for (CS cs : cses)
@@ -301,7 +315,7 @@ int main()
                 }
                 else
                 {
-                    cout << "error writing to file 'all.txt'";
+                    cout << "error writing to file '" << FileName << "'" << endl;
                     cs_created = false;
                     pipe_created = false;
                 }
@@ -316,7 +330,8 @@ int main()
         case 7:
         {
             ifstream fin;
-            fin.open("all.txt", ios::in);
+            string FileName = InputFileName();
+            fin.open(FileName, ios::in);
             if (fin.is_open())
             {
                 string str = {};
@@ -338,7 +353,7 @@ int main()
             }
             else
             {
-                cout << "error reading from file 'all.txt'" << endl;
+                cout << "error reading from file '" << FileName <<"'" << endl;
             }
             fin.close();
             break;
