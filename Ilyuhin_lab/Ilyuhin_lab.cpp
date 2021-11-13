@@ -177,11 +177,19 @@ CS& SelectCS(vector <CS>& cs)
     return cs[index - 1];
 }
 
-//void DeletePipe(vector<Pipe>& p)
-//{
-//    cout << "Enter index : ";
-//    unsigned int index = GetCorrectNumber(1u, p.size());
-//}
+void DeletePipe(vector<Pipe>& p)
+{
+    cout << "Enter index : ";
+    unsigned int index = GetCorrectNumber(1u, p.size());
+    p.erase(p.cbegin() + index - 1);
+}
+
+void DeleteCS(vector<CS>& cs)
+{
+    cout << "Enter index : ";
+    unsigned int index = GetCorrectNumber(1u, cs.size());
+    cs.erase(cs.cbegin() + index - 1);
+}
 
 int main()
 {
@@ -192,7 +200,7 @@ int main()
     while (1)
     {
         PrintMenu();
-        switch (GetCorrectNumber(0, 7))
+        switch (GetCorrectNumber(0, 10))
         {
         case 1:
         {
@@ -343,6 +351,30 @@ int main()
                 cout << "error reading from file '" << FileName <<"'" << endl;
             }
             fin.close();
+            break;
+        }
+        case 8:
+        {
+            if (pipe_created)
+            {
+                DeletePipe(pipes);
+            }
+            else
+            {
+                cout << "Pipe is not created!" << endl;
+            }
+            break;
+        }
+        case 9:
+        {
+            if (cs_created)
+            {
+                DeleteCS(cses);
+            }
+            else
+            {
+                cout << "CS is not created!" << endl;
+            }
             break;
         }
         case 0:
