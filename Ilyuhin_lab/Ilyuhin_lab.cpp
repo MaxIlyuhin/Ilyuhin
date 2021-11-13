@@ -195,6 +195,10 @@ vector <int> FindPipesByFilter(const vector<Pipe>& pipes, Filter1 <T> f, T param
             res.push_back(i);
         i++;
     }
+    if (res.size() == 0)
+    {
+        cout << "Pipes not found" << endl;
+    }
     return res;
 }
 
@@ -203,6 +207,11 @@ using Filter2 = bool(*)(const CS& cs, T param);
 bool CheckByName(const CS& cs, string param)
 {
     return cs.name == param;
+}
+bool CheckByPercent(const CS& cs, int param)
+{
+    int percent = double(cs.count_of_workshops - cs.working_workshops) / cs.count_of_workshops * 100;
+    return percent == param;
 }
 
 template <typename T>
@@ -216,10 +225,12 @@ vector <int> FindCSesByFilter(const vector<CS>& CSes, Filter2 <T> f, T param)
             res.push_back(i);
         i++;
     }
+    if (res.size() == 0)
+    {
+        cout << "CS not found" << endl;
+    }
     return res;
 }
-
-
 
 void DeletePipe(vector<Pipe>& p)
 {
@@ -433,12 +444,23 @@ int main()
             }
             else
             {
-                string name;
-                cout << "Find CS with name:  " << endl;
-                cin.ignore(10000, '\n');
-                getline(cin, name);
-                for (int i : FindCSesByFilter(cses, CheckByName, name))
-                    cout << cses[i];
+                cout << "Find CS (1 - By name / 2 - By percentage of unused workshops) : ";
+                if (GetCorrectNumber(1, 2) == 1)
+                {
+                    string name;
+                    cout << "Find CS with name: ";
+                    cin.ignore(10000, '\n');
+                    getline(cin, name);
+                    for (int i : FindCSesByFilter(cses, CheckByName, name))
+                        cout << cses[i];
+                }
+                else
+                {
+                    cout << "Find CS with percentage of unused workshops : ";
+                    int percent = GetCorrectNumber(0, 100);
+                    for (int i : FindCSesByFilter(cses, CheckByPercent, percent))
+                        cout << cses[i];
+                }
             }
             break;
         }
