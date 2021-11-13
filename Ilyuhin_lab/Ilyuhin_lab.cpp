@@ -177,20 +177,50 @@ CS& SelectCS(vector <CS>& cs)
     return cs[index - 1];
 }
 
-vector <int> FindPipesByStatus(const vector<Pipe>& pipes)
+template <typename T>
+using Filter1 = bool(*)(const Pipe& p, T param);
+bool CheckByStatus(const Pipe& p, bool param)
 {
-    cout << "Find pipes with status (1 - in repair / 0 - in work) : ";
-    bool status = GetCorrectNumber(0, 1);
+    return p.repair == param;
+}
+
+template <typename T>
+vector <int> FindPipesByFilter(const vector<Pipe>& pipes, Filter1 <T> f, T param)
+{
     vector <int> res;
     int i = 0;
     for (auto& p : pipes)
     {
-        if (p.repair == status)
+        if (f(p, param))
             res.push_back(i);
         i++;
     }
     return res;
 }
+
+template <typename T>
+using Filter2 = bool(*)(const CS& cs, T param);
+bool CheckByName(const CS& cs, string param)
+{
+    return cs.name == param;
+}
+
+template <typename T>
+vector <int> FindCSesByFilter(const vector<CS>& CSes, Filter2 <T> f, T param)
+{
+    vector <int> res;
+    int i = 0;
+    for (auto& cs : CSes)
+    {
+        if (f(cs, param))
+            res.push_back(i);
+        i++;
+    }
+    return res;
+}
+
+
+
 void DeletePipe(vector<Pipe>& p)
 {
     cout << "Enter index : ";
@@ -393,8 +423,23 @@ int main()
         }
         case 10:
         {
-            for (int i : FindPipesByStatus(pipes))
-                cout << pipes[i];
+            cout << "Find pipes or CS by filter (1 - pipes / 2 - CS) ";
+            if (GetCorrectNumber(1, 2) == 1)
+            {
+                cout << "Find pipes with status (1 - in repair / 0 - in work) : ";
+                bool status = GetCorrectNumber(0, 1);
+                for (int i : FindPipesByFilter(pipes, CheckByStatus, status))
+                    cout << pipes[i];
+            }
+            else
+            {
+                string name;
+                cout << "Find CS with name:  " << endl;
+                cin.ignore(10000, '\n');
+                getline(cin, name);
+                for (int i : FindCSesByFilter(cses, CheckByName, name))
+                    cout << cses[i];
+            }
             break;
         }
         case 0:
