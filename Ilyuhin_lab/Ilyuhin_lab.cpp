@@ -177,6 +177,20 @@ CS& SelectCS(vector <CS>& cs)
     return cs[index - 1];
 }
 
+vector <int> FindPipesByStatus(const vector<Pipe>& pipes)
+{
+    cout << "Find pipes with status (1 - in repair / 0 - in work) : ";
+    bool status = GetCorrectNumber(0, 1);
+    vector <int> res;
+    int i = 0;
+    for (auto& p : pipes)
+    {
+        if (p.repair == status)
+            res.push_back(i);
+        i++;
+    }
+    return res;
+}
 void DeletePipe(vector<Pipe>& p)
 {
     cout << "Enter index : ";
@@ -375,6 +389,12 @@ int main()
             {
                 cout << "CS is not created!" << endl;
             }
+            break;
+        }
+        case 10:
+        {
+            for (int i : FindPipesByStatus(pipes))
+                cout << pipes[i];
             break;
         }
         case 0:
