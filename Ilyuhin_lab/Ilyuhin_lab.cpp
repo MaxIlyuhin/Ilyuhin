@@ -2,24 +2,11 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include "Pipe.h"
+#include "utils.h"
+#include "CS.h"
 
 using namespace std;
-
-struct Pipe {
-    int id;
-    double length;
-    int diameter;
-    bool repair;
-    string name;
-};
-
-struct CS {
-    int id;
-    string name;
-    int count_of_workshops;
-    int working_workshops;
-    double efficiency;
-};
 
 void PrintMenu()
 {
@@ -38,29 +25,12 @@ void PrintMenu()
         << "Choose action:" << " ";
 }
 
-void ClearStream()
-{
-    cin.clear();
-    cin.ignore(10000, '\n');
-}
-
-template <typename T>
-T GetCorrectNumber(T min, T max)
-{
-    T x;
-    while ((cin >> x).fail() || x < min || x > max || cin.peek() != '\n')
-    {
-        ClearStream();
-        cout << "Type number (" << min << "-" << max << "):" << " ";
-    }
-    return x;
-}
-
 string InputFileName()
 {
     string fname;
     cout << "Input the file name: ";
-    ClearStream();
+    cin.clear();
+    cin.ignore(10000, '\n');
     getline(cin, fname);
     fname = fname + ".txt";
     return fname;
@@ -69,63 +39,13 @@ string InputFileName()
 void EditPipe(Pipe& p)
 {
     cout << "in repair? (1 - yes; 0 - in work) : ";
-    if (GetCorrectNumber(0, 1) == 1)
-        p.repair = 1;
-    else
-        p.repair = 0;
-}
-
-istream& operator >> (istream& in, Pipe& p)
-{
-    p.id = 1;
-    cout << "Please, enter the name of the pipe" << " ";
-    ClearStream();
-    getline(cin, p.name);
-    cout << "Please, enter the length of the pipe (m)" << " ";
-    p.length = GetCorrectNumber(1.0, 500000.0);
-    cout << "Please, enter the pipe diameter (mm)" << " ";
-    p.diameter = GetCorrectNumber(300, 1420);
-    EditPipe(p);
-    return in;
+    p.repair = GetCorrectNumber(0, 1);
 }
 
 void EditCS(CS& cs)
 {
     cout << "Please, enter the number of shops in work" << " ";
     cs.working_workshops = GetCorrectNumber(1, cs.count_of_workshops);
-}
-
-istream& operator >> (istream& in, CS& cs)
-{
-    cs.id = 2;
-    cout << "Please, enter the name of the station" << " ";
-    ClearStream();
-    getline(cin, cs.name);
-    cout << "Please, enter the number of shops" << " ";
-    cs.count_of_workshops = GetCorrectNumber(0, 10);
-    EditCS(cs);
-    cout << "Please, enter the efficiency" << " ";
-    cs.efficiency = GetCorrectNumber(0.0, 1.0);
-    return in;
-}
-
-ostream& operator << (ostream& out, const Pipe& p)
-{
-    out << "Pipe ID" << " " << p.id << endl
-        << "Pipe length is" << " " << p.length << endl
-        << "Pipe diameter is" << " " << p.diameter << endl
-        << "status:" << " " << ((p.repair == 0) ? "in work" : "in repair") << endl;
-    return out;
-}
-
-ostream& operator << (ostream& out, const CS& cs)
-{
-    out << "CS ID" << " " << cs.id << endl
-        << "Name of CS" << " " << cs.name << endl
-        << "Number of workshops" << " " << cs.count_of_workshops << endl
-        << "Number of working workshops" << " " << cs.working_workshops << endl
-        << "Efficiency" << " " << cs.efficiency << endl;
-    return out;
 }
 
 Pipe LoadPipe(ifstream& fin) {
