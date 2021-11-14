@@ -10,6 +10,7 @@ struct Pipe {
     double length;
     int diameter;
     bool repair;
+    string name;
 };
 
 struct CS {
@@ -77,6 +78,9 @@ void EditPipe(Pipe& p)
 istream& operator >> (istream& in, Pipe& p)
 {
     p.id = 1;
+    cout << "Please, enter the name of the pipe" << " ";
+    ClearStream();
+    getline(cin, p.name);
     cout << "Please, enter the length of the pipe (m)" << " ";
     p.length = GetCorrectNumber(1.0, 500000.0);
     cout << "Please, enter the pipe diameter (mm)" << " ";
@@ -179,6 +183,20 @@ CS& SelectCS(vector <CS>& cs)
 
 template <typename T>
 using Filter1 = bool(*)(const Pipe& p, T param);
+
+bool CheckByPipeName(const Pipe& p, string param)
+{
+    return p.name == param;
+}
+
+bool CheckByLength(const Pipe& p, double param)
+{
+    return p.length >= param;
+}
+bool CheckByDiameter(const Pipe& p, int param)
+{
+    return p.diameter >= param;
+}
 bool CheckByStatus(const Pipe& p, bool param)
 {
     return p.repair == param;
@@ -208,9 +226,9 @@ bool CheckByName(const CS& cs, string param)
 {
     return cs.name == param;
 }
-bool CheckByPercent(const CS& cs, int param)
+bool CheckByPercent(const CS& cs, double param) // разобраться с double
 {
-    int percent = double(cs.count_of_workshops - cs.working_workshops) / cs.count_of_workshops * 100;
+    double percent = double(cs.count_of_workshops - cs.working_workshops) / cs.count_of_workshops * 100;
     return percent == param;
 }
 
@@ -437,10 +455,46 @@ int main()
             cout << "Find pipes or CS by filter (1 - pipes / 2 - CS) ";
             if (GetCorrectNumber(1, 2) == 1)
             {
-                cout << "Find pipes with status (1 - in repair / 0 - in work) : ";
-                bool status = GetCorrectNumber(0, 1);
-                for (int i : FindPipesByFilter(pipes, CheckByStatus, status))
-                    cout << pipes[i];
+                cout << "Find pipes by Filter (1 - name; 2 - length; 3 - diameter; 4 - status) : ";
+                switch (GetCorrectNumber(1, 4))
+                {
+                case 1:
+                {
+                    string pipename;
+                    cout << "Find pipe with name:  ";
+                    cin.ignore(10000, '\n');
+                    getline(cin, pipename);
+                    for (int i : FindPipesByFilter(pipes, CheckByPipeName, pipename))
+                        cout << pipes[i];
+                    break;
+                }
+                case 2:
+                {
+                    cout << "Pipe with a length greater than or equal to (m):  ";
+                    double pipelength = GetCorrectNumber(1.0, 500000.0);
+                    for (int i : FindPipesByFilter(pipes, CheckByLength, pipelength))
+                        cout << pipes[i];
+                    break;
+                }
+
+                case 3:
+                {
+                    cout << "Find pipe with diameter (mm):  ";
+                    int pipediameter = GetCorrectNumber(300, 1420);
+                    for (int i : FindPipesByFilter(pipes, CheckByDiameter, pipediameter))
+                        cout << pipes[i];
+                    break;
+                }
+
+                case 4:
+                {
+                    cout << "Find pipe with status (1 - in repair; 0 - in work) :  ";
+                    bool status = GetCorrectNumber(0, 1);
+                    for (int i : FindPipesByFilter(pipes, CheckByStatus, status))
+                        cout << pipes[i];
+                    break;
+                }
+                }
             }
             else
             {
@@ -457,7 +511,7 @@ int main()
                 else
                 {
                     cout << "Find CS with percentage of unused workshops : ";
-                    int percent = GetCorrectNumber(0, 100);
+                    double percent = GetCorrectNumber(0.0, 100.0);
                     for (int i : FindCSesByFilter(cses, CheckByPercent, percent))
                         cout << cses[i];
                 }
