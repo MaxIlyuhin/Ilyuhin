@@ -3,15 +3,21 @@
 
 using namespace std;
 
-//void Pipe::EditPipe()
-//{
-//    cout << "in repair? (1 - yes; 0 - in work) : ";
-//    repair = GetCorrectNumber(0, 1);
+int Pipe::MaxID = 0;
+Pipe::Pipe()
+{
+    id = ++MaxID;
+}
+
+//int Pipe::getId() const
+//{   
+//    return id;
 //}
 
 ostream& operator << (ostream& out, const Pipe& p)
 {
-    out << "Pipe ID" << " " << p.id << endl
+    out << "Pipe MaxID" << " " << Pipe::MaxID << endl
+        << "Pipe ID" << " " << p.id << endl
         << "Name of the pipe" << " " << p.name << endl
         << "Pipe length is" << " " << p.length << endl
         << "Pipe diameter is" << " " << p.diameter << endl
@@ -21,7 +27,7 @@ ostream& operator << (ostream& out, const Pipe& p)
 
 istream& operator >> (istream& in, Pipe& p)
 {
-    p.id = 1;
+
     cout << "Please, enter the name of the pipe" << " ";
     cin.clear();
     cin.ignore(10000, '\n');
@@ -34,3 +40,4 @@ istream& operator >> (istream& in, Pipe& p)
     p.repair = GetCorrectNumber(0, 1);
     return in;
 }
+

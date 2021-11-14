@@ -59,7 +59,7 @@ Pipe LoadPipe(ifstream& fin) {
 
 CS LoadCS(ifstream& fin) {
     CS cs;
-    fin >> cs.id
+    fin >> cs.idCS
         >> cs.name
         >> cs.count_of_workshops
         >> cs.working_workshops
@@ -80,7 +80,7 @@ void SavePipe(ofstream& fout, const Pipe& p)
 void SaveCS(ofstream& fout, const CS& cs)
 {
     fout << "cs" << endl
-        << cs.id << endl
+        << cs.idCS << endl
         << cs.name << endl
         << cs.count_of_workshops << endl
         << cs.working_workshops << endl
