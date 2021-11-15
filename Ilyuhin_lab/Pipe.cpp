@@ -1,5 +1,6 @@
 #include "Pipe.h"
 #include "utils.h"
+#include <fstream>
 
 using namespace std;
 
@@ -9,10 +10,10 @@ Pipe::Pipe()
     id = ++MaxID;
 }
 
-//int Pipe::getId() const
-//{   
-//    return id;
-//}
+int Pipe::getId() const
+{   
+    return id;
+}
 
 ostream& operator << (ostream& out, const Pipe& p)
 {
@@ -41,3 +42,22 @@ istream& operator >> (istream& in, Pipe& p)
     return in;
 }
 
+ifstream& operator >> (ifstream & fin, Pipe & p)
+{
+    /*Pipe p;*/
+    fin >> p.id
+        >> p.length
+        >> p.diameter
+        >> p.repair;
+    return fin;
+}
+
+ofstream& operator << (ofstream& fout, const Pipe& p)
+{
+   fout << "Pipe" << endl
+        << p.id << endl
+        << p.length << endl
+        << p.diameter << endl
+        << p.repair << endl;
+    return fout;
+}

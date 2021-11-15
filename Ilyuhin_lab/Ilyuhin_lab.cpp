@@ -48,14 +48,14 @@ void EditCS(CS& cs)
     cs.working_workshops = GetCorrectNumber(1, cs.count_of_workshops);
 }
 
-Pipe LoadPipe(ifstream& fin) {
-    Pipe p;
-    fin >> p.id
-        >> p.length
-        >> p.diameter
-        >> p.repair;
-    return p;
-}
+//Pipe LoadPipe(ifstream& fin) {
+//    Pipe p;
+//    fin >> p.id
+//        >> p.length
+//        >> p.diameter
+//        >> p.repair;
+//    return p;
+//}
 
 CS LoadCS(ifstream& fin) {
     CS cs;
@@ -67,15 +67,15 @@ CS LoadCS(ifstream& fin) {
     return cs;
 }
 
-void SavePipe(ofstream& fout, const Pipe& p)
-{
-
-    fout << "Pipe" << endl
-        << p.id << endl
-        << p.length << endl
-        << p.diameter << endl
-        << p.repair << endl;
-}
+//void SavePipe(ofstream& fout, const Pipe& p)
+//{
+//
+//    fout << "Pipe" << endl
+//        << p.id << endl
+//        << p.length << endl
+//        << p.diameter << endl
+//        << p.repair << endl;
+//}
 
 void SaveCS(ofstream& fout, const CS& cs)
 {
@@ -90,7 +90,7 @@ void SaveCS(ofstream& fout, const CS& cs)
 Pipe& SelectPipe(vector<Pipe>& p)
 {
     cout << "Enter index: ";
-    unsigned int index = GetCorrectNumber(1u, p.size()); 
+    unsigned int index = GetCorrectNumber(1u, p.size());
     return p[index - 1];
 }
 
@@ -173,52 +173,52 @@ vector <int> FindCSesByFilter(const vector<CS>& CSes, Filter2 <T> f, T param)
 vector <int> SearchPipes(const vector<Pipe>& pipes)
 {
     vector <int> result;
-        cout << "Find pipes by Filter (1 - name; 2 - length; 3 - diameter; 4 - status) : ";
-        switch (GetCorrectNumber(1, 4))
-        {
-        case 1:
-        {
-            string pipename;
-            cout << "Find pipe with name:  ";
-            cin.ignore(10000, '\n');
-            getline(cin, pipename);
-            for (int i : FindPipesByFilter(pipes, CheckByPipeName, pipename))
-                cout << pipes[i];
-            break;
-        }
-        case 2:
-        {
-            cout << "Pipe with a length greater than or equal to (m):  ";
-            double pipelength = GetCorrectNumber(1.0, 500000.0);
-            for (int i : FindPipesByFilter(pipes, CheckByLength, pipelength))
-                cout << pipes[i];
-            break;
-        }
+    cout << "Find pipes by Filter (1 - name; 2 - length; 3 - diameter; 4 - status) : ";
+    switch (GetCorrectNumber(1, 4))
+    {
+    case 1:
+    {
+        string pipename;
+        cout << "Find pipe with name:  ";
+        cin.ignore(10000, '\n');
+        getline(cin, pipename);
+        for (int i : FindPipesByFilter(pipes, CheckByPipeName, pipename))
+            cout << pipes[i];
+        break;
+    }
+    case 2:
+    {
+        cout << "Pipe with a length greater than or equal to (m):  ";
+        double pipelength = GetCorrectNumber(1.0, 500000.0);
+        for (int i : FindPipesByFilter(pipes, CheckByLength, pipelength))
+            cout << pipes[i];
+        break;
+    }
 
-        case 3:
-        {
-            cout << "Find pipe with diameter (mm):  ";
-            int pipediameter = GetCorrectNumber(300, 1420);
-            for (int i : FindPipesByFilter(pipes, CheckByDiameter, pipediameter))
-                cout << pipes[i];
-            break;
-        }
+    case 3:
+    {
+        cout << "Find pipe with diameter (mm):  ";
+        int pipediameter = GetCorrectNumber(300, 1420);
+        for (int i : FindPipesByFilter(pipes, CheckByDiameter, pipediameter))
+            cout << pipes[i];
+        break;
+    }
 
-        case 4:
-        {
-            cout << "Find pipe with status (1 - in repair; 0 - in work) :  ";
-            bool status = GetCorrectNumber(0, 1);
-            for (int i : FindPipesByFilter(pipes, CheckByStatus, status))
-                cout << pipes[i];
-            break;
-        }
-        default:
-        {
-            cout << "Wrong action" << endl;
-            break;
-        }
-        }
-        return result;
+    case 4:
+    {
+        cout << "Find pipe with status (1 - in repair; 0 - in work) :  ";
+        bool status = GetCorrectNumber(0, 1);
+        for (int i : FindPipesByFilter(pipes, CheckByStatus, status))
+            cout << pipes[i];
+        break;
+    }
+    default:
+    {
+        cout << "Wrong action" << endl;
+        break;
+    }
+    }
+    return result;
 }
 
 vector <int> SearchCS(const vector<CS>& cses)
@@ -345,7 +345,7 @@ int main()
                 if (fout.is_open())
                 {
                     for (Pipe p : pipes)
-                        SavePipe(fout, p);
+                        fout << p;
                     for (CS cs : cses)
                         SaveCS(fout, cs);
                     pipe_created = true;
@@ -359,13 +359,12 @@ int main()
             }
             else if (pipe_created && !cs_created)
             {
-
                 string FileName = InputFileName();
                 fout.open(FileName, ios::out);
                 if (fout.is_open())
                 {
                     for (Pipe p : pipes)
-                        SavePipe(fout, p);
+                        fout << p;
                     pipe_created = true;
                 }
                 else
@@ -401,6 +400,7 @@ int main()
         }
         case 7:
         {
+            Pipe p;
             ifstream fin;
             string FileName = InputFileName();
             fin.open(FileName, ios::in);
@@ -409,11 +409,11 @@ int main()
                 string str = {};
                 while (!fin.eof())
                 {
-
                     getline(fin, str);
                     if (str == "Pipe")
                     {
-                        pipes.push_back(LoadPipe(fin));
+                        fin >> p;
+                        pipes.push_back(p);
                         pipe_created = true;
                     }
                     else if (str == "cs")
@@ -458,7 +458,7 @@ int main()
         {
             cout << "Find pipes or CS by filter (1 - pipes / 2 - CS) ";
             if (GetCorrectNumber(1, 2) == 1)
-                SearchPipes(pipes);          
+                SearchPipes(pipes);
             else
                 SearchCS(cses);
             break;
@@ -472,6 +472,6 @@ int main()
             cout << "wrong action" << endl;
         }
         }
-        }
+    }
     return 0;
 }
