@@ -57,15 +57,15 @@ void EditCS(CS& cs)
 //    return p;
 //}
 
-CS LoadCS(ifstream& fin) {
-    CS cs;
-    fin >> cs.idCS
-        >> cs.name
-        >> cs.count_of_workshops
-        >> cs.working_workshops
-        >> cs.efficiency;
-    return cs;
-}
+//CS LoadCS(ifstream& fin) {
+//    CS cs;
+//    fin >> cs.idCS
+//        >> cs.name
+//        >> cs.count_of_workshops
+//        >> cs.working_workshops
+//        >> cs.efficiency;
+//    return cs;
+//}
 
 //void SavePipe(ofstream& fout, const Pipe& p)
 //{
@@ -77,15 +77,15 @@ CS LoadCS(ifstream& fin) {
 //        << p.repair << endl;
 //}
 
-void SaveCS(ofstream& fout, const CS& cs)
-{
-    fout << "cs" << endl
-        << cs.idCS << endl
-        << cs.name << endl
-        << cs.count_of_workshops << endl
-        << cs.working_workshops << endl
-        << cs.efficiency << endl;
-}
+//void SaveCS(ofstream& fout, const CS& cs)
+//{
+//    fout << "cs" << endl
+//        << cs.idCS << endl
+//        << cs.name << endl
+//        << cs.count_of_workshops << endl
+//        << cs.working_workshops << endl
+//        << cs.efficiency << endl;
+//}
 
 Pipe& SelectPipe(vector<Pipe>& p)
 {
@@ -347,7 +347,7 @@ int main()
                     for (Pipe p : pipes)
                         fout << p;
                     for (CS cs : cses)
-                        SaveCS(fout, cs);
+                        fout << cs;
                     pipe_created = true;
                     cs_created = true;
                 }
@@ -381,7 +381,7 @@ int main()
                 if (fout.is_open())
                 {
                     for (CS cs : cses)
-                        SaveCS(fout, cs);
+                        fout << cs;
                     cs_created = true;
                 }
                 else
@@ -401,6 +401,7 @@ int main()
         case 7:
         {
             Pipe p;
+            CS cs;
             ifstream fin;
             string FileName = InputFileName();
             fin.open(FileName, ios::in);
@@ -412,13 +413,15 @@ int main()
                     getline(fin, str);
                     if (str == "Pipe")
                     {
+                       
                         fin >> p;
                         pipes.push_back(p);
                         pipe_created = true;
                     }
                     else if (str == "cs")
                     {
-                        cses.push_back(LoadCS(fin));
+                        fin >> cs;
+                        cses.push_back(cs);
                         cs_created = true;
                     }
                 }

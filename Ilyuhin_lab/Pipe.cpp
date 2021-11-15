@@ -45,7 +45,9 @@ istream& operator >> (istream& in, Pipe& p)
 ifstream& operator >> (ifstream & fin, Pipe & p)
 {
     /*Pipe p;*/
-    fin >> p.id
+    fin >> Pipe::MaxID
+        >> p.id
+        >> p.name
         >> p.length
         >> p.diameter
         >> p.repair;
@@ -55,7 +57,9 @@ ifstream& operator >> (ifstream & fin, Pipe & p)
 ofstream& operator << (ofstream& fout, const Pipe& p)
 {
    fout << "Pipe" << endl
+       << Pipe::MaxID << endl
         << p.id << endl
+        << p.name << endl
         << p.length << endl
         << p.diameter << endl
         << p.repair << endl;

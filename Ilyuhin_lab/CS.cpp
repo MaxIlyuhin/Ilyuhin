@@ -1,5 +1,6 @@
 #include "CS.h"
 #include "utils.h"
+#include <fstream>
 
 using namespace std;
 
@@ -8,6 +9,12 @@ CS::CS()
 {
     idCS = ++MaxIDCS;
 }
+
+int CS::getIDcs() const
+{
+    return idCS;
+}
+
 ostream& operator << (ostream& out, const CS& cs)
 {
     out << "CS MaxID" << " " << CS::MaxIDCS << endl
@@ -32,4 +39,27 @@ istream& operator >> (istream& in, CS& cs)
     cout << "Please, enter the efficiency" << " ";
     cs.efficiency = GetCorrectNumber(0.0, 1.0);
     return in;
+}
+
+ifstream& operator >> (ifstream & fin, CS & cs)
+{
+    fin >> CS::MaxIDCS
+        >> cs.idCS
+        >> cs.name
+        >> cs.count_of_workshops
+        >> cs.working_workshops
+        >> cs.efficiency;
+    return fin;
+}
+
+ofstream& operator << (ofstream& fout, const CS& cs)
+{
+    fout << "cs" << endl
+        << CS::MaxIDCS << endl
+        << cs.idCS << endl
+        << cs.name << endl
+        << cs.count_of_workshops << endl
+        << cs.working_workshops << endl
+        << cs.efficiency << endl;
+    return fout;
 }
