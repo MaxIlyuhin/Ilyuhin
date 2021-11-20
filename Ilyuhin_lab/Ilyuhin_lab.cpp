@@ -353,16 +353,13 @@ int main()
         }
         case 3:
         {
-            if (mapPipe.size() && mapCS.size())
-            {
+            if (mapPipe.size())
                 printMapPipe(mapPipe);
+            if (mapCS.size())
                 printMapCS(mapCS);
-            }
-            else
-            {
+            if (!pipe_created && !cs_created)
                 cout << "elements are not created" << endl;
-            }
-            break;
+                break;
         }
         /*case 4:
         {
