@@ -44,7 +44,6 @@ istream& operator >> (istream& in, Pipe& p)
 
 ifstream& operator >> (ifstream & fin, Pipe & p)
 {
-    /*Pipe p;*/
     fin >> Pipe::MaxID
         >> p.id
         >> p.name

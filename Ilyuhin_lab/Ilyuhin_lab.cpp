@@ -5,6 +5,7 @@
 #include "Pipe.h"
 #include "utils.h"
 #include "CS.h"
+#include <unordered_map>
 
 using namespace std;
 
@@ -47,45 +48,6 @@ void EditCS(CS& cs)
     cout << "Please, enter the number of shops in work" << " ";
     cs.working_workshops = GetCorrectNumber(1, cs.count_of_workshops);
 }
-
-//Pipe LoadPipe(ifstream& fin) {
-//    Pipe p;
-//    fin >> p.id
-//        >> p.length
-//        >> p.diameter
-//        >> p.repair;
-//    return p;
-//}
-
-//CS LoadCS(ifstream& fin) {
-//    CS cs;
-//    fin >> cs.idCS
-//        >> cs.name
-//        >> cs.count_of_workshops
-//        >> cs.working_workshops
-//        >> cs.efficiency;
-//    return cs;
-//}
-
-//void SavePipe(ofstream& fout, const Pipe& p)
-//{
-//
-//    fout << "Pipe" << endl
-//        << p.id << endl
-//        << p.length << endl
-//        << p.diameter << endl
-//        << p.repair << endl;
-//}
-
-//void SaveCS(ofstream& fout, const CS& cs)
-//{
-//    fout << "cs" << endl
-//        << cs.idCS << endl
-//        << cs.name << endl
-//        << cs.count_of_workshops << endl
-//        << cs.working_workshops << endl
-//        << cs.efficiency << endl;
-//}
 
 Pipe& SelectPipe(vector<Pipe>& p)
 {
@@ -254,6 +216,29 @@ vector <int> SearchCS(const vector<CS>& cses)
     return result;
 }
 
+void printMapPipe(const unordered_map <int, Pipe> &mapPipe)
+{
+    for (auto const& i : mapPipe)
+    {
+        cout << i.second;
+    }
+}
+
+void printMapCS(const unordered_map <int, CS>& mapCS)
+{
+    for (auto const& i : mapCS)
+    {
+        cout << i.second;
+    }
+}
+
+
+
+
+
+
+
+
 void DeletePipe(vector<Pipe>& p)
 {
     cout << "Enter index : ";
@@ -270,10 +255,21 @@ void DeleteCS(vector<CS>& cs)
 
 int main()
 {
-    vector <Pipe> pipes;
-    vector <CS> cses;
+    /*vector <Pipe> pipes;
+    vector <CS> cses;*/
     bool pipe_created = false;
     bool cs_created = false;
+
+
+
+
+    unordered_map <int, Pipe> mapPipe = {};
+    unordered_map <int, CS> mapCS = {};
+
+
+
+
+
     while (1)
     {
         PrintMenu();
@@ -284,7 +280,8 @@ int main()
             Pipe p = {};
             cin >> p;
             pipe_created = true;
-            pipes.push_back(p);
+            /*pipes.push_back(p);*/
+            mapPipe.insert({p.getId(), p});
             break;
         }
         case 2:
@@ -292,12 +289,13 @@ int main()
             CS cs = {};
             cin >> cs;
             cs_created = true;
-            cses.push_back(cs);
+            /*cses.push_back(cs);*/
+            mapCS.insert({cs.getIDcs(), cs});
             break;
         }
         case 3:
         {
-            if (pipe_created)
+            /*if (pipe_created)
             {
                 for (Pipe p : pipes)
                     cout << p;
@@ -308,10 +306,20 @@ int main()
                     cout << cs;
             }
             if (!pipe_created && !cs_created)
+                cout << "elements are not created" << endl;*/
+
+            if (mapPipe.size() && mapCS.size())
+            {
+                printMapPipe(mapPipe);
+                printMapCS(mapCS);
+            }
+            else
+            {
                 cout << "elements are not created" << endl;
+            }
             break;
         }
-        case 4:
+        /*case 4:
         {
             if (pipe_created)
             {
@@ -465,7 +473,7 @@ int main()
             else
                 SearchCS(cses);
             break;
-        }
+        }*/
         case 0:
         {
             return 0;
