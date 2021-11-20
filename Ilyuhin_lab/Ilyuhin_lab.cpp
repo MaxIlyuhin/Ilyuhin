@@ -26,6 +26,25 @@ void PrintMenu()
         << "Choose action:" << " ";
 }
 
+void FindPipesMenu()
+{
+    cout << "--------------------------" << endl
+        << "1. Find pipes by name " << endl
+        << "2. Find pipes by length " << endl
+        << "3. Find pipes by diameter " << endl
+        << "4. Find pipes by status " << endl
+        << "0. Back to menu " << endl
+        << "Choose action: " << " ";
+}
+
+void FindCSMenu()
+{
+    cout << "--------------------------" << endl
+        << "1. Find CS by name " << endl
+        << "2. Find CS by percentage of unused workshops " << endl
+        << "0. Back to menu " << endl
+        << "Choose action: " << " ";
+}
 string InputFileName()
 {
     string fname;
@@ -130,85 +149,115 @@ vector <int> FindCSesByFilter(const unordered_map <int, CS>& map, Filter2 <T> f,
     return res;
 }
 
+void packetEditPipe(vector <int>& vect, unordered_map <int, Pipe>& mapPipe)
+{
+    cout << "Edit all yes[1]/no[0]: ";
+    if (GetCorrectNumber(0, 1))
+    {
+        cout << "All in repair? yes[1]/no[0]:";
+        bool status = (bool)GetCorrectNumber(0, 1);
+        for (int i : vect)
+            mapPipe[i].repair = status;
+    }
+    else
+    {
+        cout << "enter a number or 0 to complete: ";
+    }
+}
+
 void Search(unordered_map <int, Pipe>& mapPipe, unordered_map <int, CS>& mapCS)
 {
     cout << "What search? Pipe[1]/CS[0]: ";
     if (GetCorrectNumber(0, 1))
     {
-        cout << "Find pipes by Filter (1 - name; 2 - length; 3 - diameter; 4 - status) : ";
-        switch (GetCorrectNumber(1, 4))
+        while (true)
         {
-        case 1:
-        {
-            string pipename;
-            cout << "Find pipe with name:  ";
-            cin.ignore(10000, '\n');
-            getline(cin, pipename);
-            for (int i : FindPipesByFilter(mapPipe, CheckByPipeName, pipename))
-                cout << mapPipe[i];
-            break;
-        }
-        case 2:
-        {
-            cout << "Pipe with a length greater than or equal to (m):  ";
-            double pipelength = GetCorrectNumber(1.0, 500000.0);
-            for (int i : FindPipesByFilter(mapPipe, CheckByLength, pipelength))
-                cout << mapPipe[i];
-            break;
-        }
+            FindPipesMenu();
+            switch (GetCorrectNumber(0, 4))
+            {
+            case 1:
+            {
+                string pipename;
+                cout << "Find pipe with name:  ";
+                cin.ignore(10000, '\n');
+                getline(cin, pipename);
+                for (int i : FindPipesByFilter(mapPipe, CheckByPipeName, pipename))
+                    cout << mapPipe[i];
+                break;
+            }
+            case 2:
+            {
+                cout << "Pipe with a length greater than or equal to (m):  ";
+                double pipelength = GetCorrectNumber(1.0, 500000.0);
+                for (int i : FindPipesByFilter(mapPipe, CheckByLength, pipelength))
+                    cout << mapPipe[i];
+                break;
+            }
 
-        case 3:
-        {
-            cout << "Find pipe with diameter (mm):  ";
-            int pipediameter = GetCorrectNumber(300, 1420);
-            for (int i : FindPipesByFilter(mapPipe, CheckByDiameter, pipediameter))
-                cout << mapPipe[i];
-            break;
-        }
+            case 3:
+            {
+                cout << "Find pipe with diameter (mm):  ";
+                int pipediameter = GetCorrectNumber(300, 1420);
+                for (int i : FindPipesByFilter(mapPipe, CheckByDiameter, pipediameter))
+                    cout << mapPipe[i];
+                break;
+            }
 
-        case 4:
-        {
-            cout << "Find pipe with status (1 - in repair; 0 - in work) :  ";
-            bool status = GetCorrectNumber(0, 1);
-            for (int i : FindPipesByFilter(mapPipe, CheckByStatus, status))
-                cout << mapPipe[i];
-            break;
-        }
-        default:
-        {
-            cout << "Wrong action" << endl;
-            break;
-        }
+            case 4:
+            {
+                cout << "Find pipe with status (1 - in repair; 0 - in work) :  ";
+                bool status = GetCorrectNumber(0, 1);
+                for (int i : FindPipesByFilter(mapPipe, CheckByStatus, status))
+                    cout << mapPipe[i];
+                break;
+            }
+            case 0:
+            {
+                return;
+            }
+            default:
+            {
+                cout << "Wrong action" << endl;
+                break;
+            }
+            }
         }
     }
     else
     {
-        cout << "Find CS (1 - By name / 2 - By percentage of unused workshops) : ";
-        switch (GetCorrectNumber(1, 2))
+        while (true)
         {
-        case 1:
-        {
-            string name;
-            cout << "Find CS with name: ";
-            cin.ignore(10000, '\n');
-            getline(cin, name);
-            for (int i : FindCSesByFilter(mapCS, CheckByName, name))
-                cout << mapCS[i];
-            break;
-        }
-        case 2:
-        {
-            cout << "Find CS with percentage of unused workshops : ";
-            double percent = GetCorrectNumber(0.0, 100.0);
-            for (int i : FindCSesByFilter(mapCS, CheckByPercent, percent))
-                cout << mapCS[i];
-            break;
-        }
-        default:
-        {
-            cout << "Wrong action" << endl;
-            break;
-        }
+            FindCSMenu();
+            switch (GetCorrectNumber(0, 2))
+            {
+            case 1:
+            {
+                string name;
+                cout << "Find CS with name: ";
+                cin.ignore(10000, '\n');
+                getline(cin, name);
+                for (int i : FindCSesByFilter(mapCS, CheckByName, name))
+                    cout << mapCS[i];
+                break;
+            }
+            case 2:
+            {
+                cout << "Find CS with percentage of unused workshops : ";
+                double percent = GetCorrectNumber(0.0, 100.0);
+                for (int i : FindCSesByFilter(mapCS, CheckByPercent, percent))
+                    cout << mapCS[i];
+                break;
+            }
+            case 0:
+            {
+                return;
+            }
+            default:
+            {
+                cout << "Wrong action" << endl;
+                break;
+            }
+            }
         }
     }
 }
