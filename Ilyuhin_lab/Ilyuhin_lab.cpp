@@ -261,14 +261,8 @@ int main()
     bool cs_created = false;
 
 
-
-
     unordered_map <int, Pipe> mapPipe = {};
     unordered_map <int, CS> mapCS = {};
-
-
-
-
 
     while (1)
     {
@@ -280,7 +274,6 @@ int main()
             Pipe p = {};
             cin >> p;
             pipe_created = true;
-            /*pipes.push_back(p);*/
             mapPipe.insert({p.getId(), p});
             break;
         }
@@ -289,25 +282,11 @@ int main()
             CS cs = {};
             cin >> cs;
             cs_created = true;
-            /*cses.push_back(cs);*/
             mapCS.insert({cs.getIDcs(), cs});
             break;
         }
         case 3:
         {
-            /*if (pipe_created)
-            {
-                for (Pipe p : pipes)
-                    cout << p;
-            }
-            if (cs_created)
-            {
-                for (CS cs : cses)
-                    cout << cs;
-            }
-            if (!pipe_created && !cs_created)
-                cout << "elements are not created" << endl;*/
-
             if (mapPipe.size() && mapCS.size())
             {
                 printMapPipe(mapPipe);
@@ -318,8 +297,8 @@ int main()
                 cout << "elements are not created" << endl;
             }
             break;
-        }
-        /*case 4:
+        }/*
+        case 4:
         {
             if (pipe_created)
             {
@@ -342,7 +321,7 @@ int main()
                 cout << "CS is not created!" << endl;
             }
             break;
-        }
+        }*/
         case 6:
         {
             ofstream fout;
@@ -352,10 +331,10 @@ int main()
                 fout.open(FileName, ios::out);
                 if (fout.is_open())
                 {
-                    for (Pipe p : pipes)
-                        fout << p;
-                    for (CS cs : cses)
-                        fout << cs;
+                    for (auto const& i : mapPipe)
+                        fout << i.second;
+                    for (auto const& i : mapCS)
+                        fout << i.second;
                     pipe_created = true;
                     cs_created = true;
                 }
@@ -371,8 +350,8 @@ int main()
                 fout.open(FileName, ios::out);
                 if (fout.is_open())
                 {
-                    for (Pipe p : pipes)
-                        fout << p;
+                    for (auto const& i : mapPipe)
+                        fout << i.second;
                     pipe_created = true;
                 }
                 else
@@ -388,8 +367,8 @@ int main()
                 fout.open(FileName, ios::out);
                 if (fout.is_open())
                 {
-                    for (CS cs : cses)
-                        fout << cs;
+                    for (auto const& i : mapCS)
+                        fout << i.second;
                     cs_created = true;
                 }
                 else
@@ -423,13 +402,15 @@ int main()
                     {
                        
                         fin >> p;
-                        pipes.push_back(p);
+                        /*pipes.push_back(p);*/
+                        mapPipe.insert({ p.getId(), p});
                         pipe_created = true;
                     }
                     else if (str == "cs")
                     {
                         fin >> cs;
-                        cses.push_back(cs);
+                        /*cses.push_back(cs);*/
+                        mapCS.insert({ cs.getIDcs(), cs});
                         cs_created = true;
                     }
                 }
@@ -441,6 +422,7 @@ int main()
             fin.close();
             break;
         }
+        /*
         case 8:
         {
             if (pipe_created)
