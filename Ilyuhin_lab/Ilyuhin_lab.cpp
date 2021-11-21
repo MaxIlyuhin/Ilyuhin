@@ -68,18 +68,18 @@ void EditCS(CS& cs)
     cs.working_workshops = GetCorrectNumber(1, cs.count_of_workshops);
 }
 
-Pipe& SelectPipe(vector<Pipe>& p)
+Pipe& SelectPipe(unordered_map <int, Pipe>& mapPipe)
 {
     cout << "Enter index: ";
-    unsigned int index = GetCorrectNumber(1u, p.size());
-    return p[index - 1];
+    unsigned int index = GetCorrectNumber(1u, mapPipe.size());
+    return mapPipe[index];
 }
 
-CS& SelectCS(vector <CS>& cs)
+CS& SelectCS(unordered_map <int, CS>& mapCS)
 {
     cout << "Enter index: ";
-    unsigned int index = GetCorrectNumber(1u, cs.size());
-    return cs[index - 1];
+    unsigned int index = GetCorrectNumber(1u, mapCS.size());
+    return mapCS[index];
 }
 
 template <typename T>
@@ -180,7 +180,7 @@ void packetEditPipe(vector <int>& vect, unordered_map <int, Pipe>& mapPipe)
 }
 
 template <typename typeElement>
-void paintVectNumElements(unordered_map <int, typeElement>& map, const vector <int>& vect)
+void printVectNumElements(unordered_map <int, typeElement>& map, const vector <int>& vect)
 {
     int count = 0;
     for (int i : vect)
@@ -207,8 +207,6 @@ void Search(unordered_map <int, Pipe>& mapPipe, unordered_map <int, CS>& mapCS)
                 cout << "Find pipe with name:  ";
                 cin.ignore(10000, '\n');
                 getline(cin, pipename);
-                /*for (int i : FindPipesByFilter(mapPipe, CheckByPipeName, pipename))
-                    cout << mapPipe[i];*/
                 result = FindPipesByFilter(mapPipe, CheckByPipeName, pipename);
                 break;
             }
@@ -247,7 +245,7 @@ void Search(unordered_map <int, Pipe>& mapPipe, unordered_map <int, CS>& mapCS)
             }
             if (size(result))
             {
-                paintVectNumElements(mapPipe, result);
+                printVectNumElements(mapPipe, result);
                 packetEditPipe(result, mapPipe);
             }
         }
@@ -288,7 +286,7 @@ void Search(unordered_map <int, Pipe>& mapPipe, unordered_map <int, CS>& mapCS)
             }
             if (size(result))
             {
-                paintVectNumElements(mapCS, result);
+                printVectNumElements(mapCS, result);
             }
         }
     }
@@ -361,11 +359,11 @@ int main()
                 cout << "elements are not created" << endl;
                 break;
         }
-        /*case 4:
+        case 4:
         {
             if (pipe_created)
             {
-                EditPipe(SelectPipe(pipes));
+                EditPipe(SelectPipe(mapPipe));
             }
             else
             {
@@ -377,14 +375,14 @@ int main()
         {
             if (cs_created)
             {
-                EditCS(SelectCS(cses));
+                EditCS(SelectCS(mapCS));
             }
             else
             {
                 cout << "CS is not created!" << endl;
             }
             break;
-        }*/
+        }
         case 6:
         {
             ofstream fout;
