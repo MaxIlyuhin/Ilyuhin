@@ -173,10 +173,22 @@ void packetEditPipe(vector <int>& vect, unordered_map <int, Pipe>& mapPipe)
             }
         }
     }
-    cout << "All selected in repair? yes[1]/no[0]:";
-    bool status = (bool)GetCorrectNumber(0, 1);
-    for (int i : vectEdit)
-        mapPipe[i].repair = status;
+    cout << "All selected: in repair[1]/ in work[0]/ delete[-1]: ";
+    int answer = GetCorrectNumber(-1, 1);
+    if (answer == -1)
+    {
+        for (int id : vectEdit)
+        {
+            auto search = mapPipe.find(id);
+            if (search != mapPipe.end())
+                mapPipe.erase(search);
+        }
+    }
+    else
+    {
+        for (int i : vectEdit)
+            mapPipe[i].repair = (bool)answer;
+    }
 }
 
 template <typename typeElement>
@@ -189,6 +201,22 @@ void printVectNumElements(unordered_map <int, typeElement>& map, const vector <i
         cout << map[i];
     }
 }
+
+void packetEditCS(vector <int>& vect, unordered_map <int, CS>& mapCS)
+{
+    vector <int> vectEdit = vect;
+        cout << "All selected: delete[-1]/ not change[0]: ";
+        if (GetCorrectNumber(-1, 0))
+        {
+            for (int id : vectEdit)
+            {
+                auto search = mapCS.find(id);
+                if (search != mapCS.end())
+                    mapCS.erase(search);
+            }
+        }
+}
+
 
 void Search(unordered_map <int, Pipe>& mapPipe, unordered_map <int, CS>& mapCS)
 {
@@ -217,7 +245,6 @@ void Search(unordered_map <int, Pipe>& mapPipe, unordered_map <int, CS>& mapCS)
                 result = FindPipesByFilter(mapPipe, CheckByLength, pipelength);
                 break;
             }
-
             case 3:
             {
                 cout << "Find pipe with diameter (mm):  ";
@@ -225,7 +252,6 @@ void Search(unordered_map <int, Pipe>& mapPipe, unordered_map <int, CS>& mapCS)
                 result = FindPipesByFilter(mapPipe, CheckByDiameter, pipediameter);
                 break;
             }
-
             case 4:
             {
                 cout << "Find pipe with status (1 - in repair; 0 - in work) :  ";
@@ -287,6 +313,7 @@ void Search(unordered_map <int, Pipe>& mapPipe, unordered_map <int, CS>& mapCS)
             if (size(result))
             {
                 printVectNumElements(mapCS, result);
+                packetEditCS(result, mapCS);
             }
         }
     }
@@ -308,18 +335,18 @@ void printMapCS(const unordered_map <int, CS>& mapCS)
     }
 }
 
-void DeletePipe(vector<Pipe>& p)
+void DeletePipe(unordered_map <int, Pipe>& mapPipe)
 {
     cout << "Enter index : ";
-    unsigned int index = GetCorrectNumber(1u, p.size());
-    p.erase(p.cbegin() + index - 1);
+    unsigned int index = GetCorrectNumber(1u, mapPipe.size());
+    mapPipe.erase(index);
 }
 
-void DeleteCS(vector<CS>& cs)
+void DeleteCS(unordered_map <int, CS>& mapCS)
 {
     cout << "Enter index : ";
-    unsigned int index = GetCorrectNumber(1u, cs.size());
-    cs.erase(cs.cbegin() + index - 1);
+    unsigned int index = GetCorrectNumber(1u, mapCS.size());
+    mapCS.erase(index);
 }
 
 int main()
@@ -481,12 +508,12 @@ int main()
             fin.close();
             break;
         }
-        /*
+        
         case 8:
         {
             if (pipe_created)
             {
-                DeletePipe(pipes);
+                DeletePipe(mapPipe);
             }
             else
             {
@@ -498,7 +525,7 @@ int main()
         {
             if (cs_created)
             {
-                DeleteCS(cses);
+                DeleteCS(mapCS);
             }
             else
             {
@@ -506,7 +533,7 @@ int main()
             }
             break;
         }
-        */
+        
         case 10:
         {
             Search(mapPipe, mapCS);
