@@ -482,6 +482,8 @@ int main()
             fin.open(FileName, ios::in);
             if (fin.is_open())
             {
+                mapPipe.clear();
+                mapCS.clear();
                 string str = {};
                 while (!fin.eof())
                 {
