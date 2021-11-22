@@ -371,6 +371,7 @@ int main()
         case 2:
         {
             CS cs = {};
+            cout << CS::MaxIDCS;
             cin >> cs;
             cs_created = true;
             mapCS.insert({cs.getIDcs(), cs});
@@ -379,9 +380,15 @@ int main()
         case 3:
         {
             if (mapPipe.size())
+            {
+                cout << "Pipe MaxID" << " " << Pipe::MaxID << endl;
                 printMapPipe(mapPipe);
+            }
             if (mapCS.size())
+            {
+                cout << "CS MaxID" << " " << CS::MaxIDCS << endl;
                 printMapCS(mapCS);
+            }
             if (!pipe_created && !cs_created)
                 cout << "elements are not created" << endl;
                 break;
@@ -477,6 +484,8 @@ int main()
         {
             Pipe p;
             CS cs;
+            int a = 0;
+            int b = 0;
             ifstream fin;
             string FileName = InputFileName();
             fin.open(FileName, ios::in);
@@ -490,13 +499,14 @@ int main()
                     getline(fin, str);
                     if (str == "Pipe")
                     {
-                       
+                        a++;
                         fin >> p;
                         mapPipe.insert({ p.getId(), p});
                         pipe_created = true;
                     }
                     else if (str == "cs")
                     {
+                        b++;
                         fin >> cs;
                         mapCS.insert({ cs.getIDcs(), cs});
                         cs_created = true;
@@ -507,6 +517,8 @@ int main()
             {
                 cout << "error reading from file '" << FileName << "'" << endl;
             }
+            Pipe::MaxID = a;
+            CS::MaxIDCS = b;
             fin.close();
             break;
         }

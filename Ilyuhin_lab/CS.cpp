@@ -17,7 +17,7 @@ int CS::getIDcs() const
 
 ostream& operator << (ostream& out, const CS& cs)
 {
-    out << "CS MaxID" << " " << CS::MaxIDCS << endl
+    out /*<< "CS MaxID" << " " << CS::MaxIDCS << endl*/
         << "CS ID" << " " << cs.idCS << endl
         << "Name of CS" << " " << cs.name << endl
         << "Number of workshops" << " " << cs.count_of_workshops << endl
@@ -43,7 +43,7 @@ istream& operator >> (istream& in, CS& cs)
 
 ifstream& operator >> (ifstream & fin, CS & cs)
 {
-    fin >> CS::MaxIDCS
+    fin /*>> CS::MaxIDCS*/
         >> cs.idCS
         >> cs.name
         >> cs.count_of_workshops
@@ -55,7 +55,7 @@ ifstream& operator >> (ifstream & fin, CS & cs)
 ofstream& operator << (ofstream& fout, const CS& cs)
 {
     fout << "cs" << endl
-        << CS::MaxIDCS << endl
+       /* << CS::MaxIDCS << endl*/
         << cs.idCS << endl
         << cs.name << endl
         << cs.count_of_workshops << endl

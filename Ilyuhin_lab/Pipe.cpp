@@ -17,7 +17,7 @@ int Pipe::getId() const
 
 ostream& operator << (ostream& out, const Pipe& p)
 {
-    out << "Pipe MaxID" << " " << Pipe::MaxID << endl
+    out /*<< "Pipe MaxID" << " " << Pipe::MaxID << endl*/
         << "Pipe ID" << " " << p.id << endl
         << "Name of the pipe" << " " << p.name << endl
         << "Pipe length is" << " " << p.length << endl
@@ -44,7 +44,7 @@ istream& operator >> (istream& in, Pipe& p)
 
 ifstream& operator >> (ifstream & fin, Pipe & p)
 {
-    fin >> Pipe::MaxID
+    fin /*>> Pipe::MaxID*/
         >> p.id
         >> p.name
         >> p.length
@@ -56,7 +56,7 @@ ifstream& operator >> (ifstream & fin, Pipe & p)
 ofstream& operator << (ofstream& fout, const Pipe& p)
 {
    fout << "Pipe" << endl
-       << Pipe::MaxID << endl
+       /*<< Pipe::MaxID << endl*/
         << p.id << endl
         << p.name << endl
         << p.length << endl
