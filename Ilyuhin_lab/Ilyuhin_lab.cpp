@@ -10,7 +10,7 @@
 using namespace std;
 
 void PrintMenu()
-{
+{  
     cout << "-------------------------" << endl
         << "1. Input pipe " << endl
         << "2. Input CS " << endl
@@ -45,6 +45,7 @@ void FindCSMenu()
         << "0. Back to menu " << endl
         << "Choose action: " << " ";
 }
+
 string InputFileName()
 {
     string fname;
@@ -104,7 +105,7 @@ bool CheckByStatus(const Pipe& p, bool param)
 }
 
 template <typename T>
-vector <int> FindPipesByFilter(/*const vector<Pipe>& pipes*/const unordered_map <int, Pipe>& map, Filter1 <T> f, T param)
+vector <int> FindPipesByFilter(const unordered_map <int, Pipe>& map, Filter1 <T> f, T param)
 {
     vector <int> res;
    
@@ -123,11 +124,13 @@ vector <int> FindPipesByFilter(/*const vector<Pipe>& pipes*/const unordered_map 
 
 template <typename T>
 using Filter2 = bool(*)(const CS& cs, T param);
+
 bool CheckByName(const CS& cs, string param)
 {
     return cs.name == param;
 }
-bool CheckByPercent(const CS& cs, double param) // разобраться с double
+
+bool CheckByPercent(const CS& cs, double param)
 {
     double percent = double(cs.count_of_workshops - cs.working_workshops) / cs.count_of_workshops * 100;
     return percent == param;
@@ -216,7 +219,6 @@ void packetEditCS(vector <int>& vect, unordered_map <int, CS>& mapCS)
             }
         }
 }
-
 
 void Search(unordered_map <int, Pipe>& mapPipe, unordered_map <int, CS>& mapCS)
 {
@@ -365,16 +367,15 @@ int main()
             Pipe p = {};
             cin >> p;
             pipe_created = true;
-            mapPipe.insert({p.getId(), p});
+            mapPipe.insert({ p.getId(), p });
             break;
         }
         case 2:
         {
             CS cs = {};
-            cout << CS::MaxIDCS;
             cin >> cs;
             cs_created = true;
-            mapCS.insert({cs.getIDcs(), cs});
+            mapCS.insert({ cs.getIDcs(), cs });
             break;
         }
         case 3:
@@ -391,7 +392,7 @@ int main()
             }
             if (!pipe_created && !cs_created)
                 cout << "elements are not created" << endl;
-                break;
+            break;
         }
         case 4:
         {
@@ -426,6 +427,8 @@ int main()
                 fout.open(FileName, ios::out);
                 if (fout.is_open())
                 {
+                    fout << Pipe::MaxID << endl;
+                    fout << CS::MaxIDCS << endl;
                     for (auto const& i : mapPipe)
                         fout << i.second;
                     for (auto const& i : mapCS)
@@ -445,6 +448,7 @@ int main()
                 fout.open(FileName, ios::out);
                 if (fout.is_open())
                 {
+                    fout << Pipe::MaxID << endl;
                     for (auto const& i : mapPipe)
                         fout << i.second;
                     pipe_created = true;
@@ -457,11 +461,11 @@ int main()
             }
             else if (!pipe_created && cs_created)
             {
-
                 string FileName = InputFileName();
                 fout.open(FileName, ios::out);
                 if (fout.is_open())
                 {
+                    fout << CS::MaxIDCS << endl;
                     for (auto const& i : mapCS)
                         fout << i.second;
                     cs_created = true;
@@ -484,8 +488,9 @@ int main()
         {
             Pipe p;
             CS cs;
-            int a = 0;
-            int b = 0;
+            int a = 0, b = 0;
+            int line_no = 0;
+            string strr = {};
             ifstream fin;
             string FileName = InputFileName();
             fin.open(FileName, ios::in);
@@ -499,17 +504,17 @@ int main()
                     getline(fin, str);
                     if (str == "Pipe")
                     {
-                        a++;
                         fin >> p;
-                        mapPipe.insert({ p.getId(), p});
+                        mapPipe.insert({ p.getId(), p });
                         pipe_created = true;
+                        a++;
                     }
                     else if (str == "cs")
                     {
-                        b++;
                         fin >> cs;
-                        mapCS.insert({ cs.getIDcs(), cs});
+                        mapCS.insert({ cs.getIDcs(), cs });
                         cs_created = true;
+                        b++;
                     }
                 }
             }
@@ -517,12 +522,32 @@ int main()
             {
                 cout << "error reading from file '" << FileName << "'" << endl;
             }
-            Pipe::MaxID = a;
-            CS::MaxIDCS = b;
             fin.close();
+            fin.open(FileName, ios::in);
+                if (a > 0 && b > 0)
+                {
+                    while (line_no != 2 && getline(fin, strr))
+                    {
+                        ++line_no;
+                        if (line_no == 1)
+                        Pipe::MaxID = stoi(strr);
+                        if (line_no == 2)
+                        CS::MaxIDCS = stoi(strr);
+                    }
+                }
+                if (a > 0 && b == 0)
+                {
+                    getline(fin, strr);
+                    Pipe::MaxID = stoi(strr);
+                }
+                if (a == 0 && b > 0)
+                {
+                    getline(fin, strr);
+                    CS::MaxIDCS = stoi(strr);
+                }
+
             break;
         }
-        
         case 8:
         {
             if (pipe_created)
@@ -547,7 +572,7 @@ int main()
             }
             break;
         }
-        
+
         case 10:
         {
             Search(mapPipe, mapCS);
